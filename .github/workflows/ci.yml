@@ -1,0 +1,236 @@
+# https://crunchingnumbers.live/2020/08/31/ci-with-github-actions-for-ember-apps-part-2/
+# https://gist.github.com/ijlee2/1c864ebe96a55f239e80800829ef0bf4
+
+# The workflow template is designed for Ember apps.
+#
+# It assumes certain dependencies and scripts in package.json. If
+# they don't apply to your project, feel free to remove irrelevant
+# code in the workflow. These can be inferred from the job name.
+#
+# {
+#   "scripts": {
+#     "build": "ember build --environment=production",
+#     "build:test": "ember build --environment=test",
+#     "deploy": "ember deploy production",
+#     "lint": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*",
+#     "lint:dependency": "ember dependency-lint",
+#     "lint:hbs": "ember-template-lint .",
+#     "lint:js": "eslint .",
+#     "start": "ember serve",
+#     "test": "npm-run-all lint:* test:*",
+#     "test:ember": "percy exec -- ember exam --query=nolint --split=4 --parallel=1"
+#   },
+#   "devDependencies": {
+#     "@percy/ember" (test-app)
+#     "ember-a11y-testing" (test-app)
+#     "ember-cli-dependency-lint" (lint)
+#     "ember-cli-deploy" (deploy-app)
+#     "ember-cli-deploy-build" (deploy-app)
+#     "ember-cli-deploy-git" (deploy-app)
+#     "ember-exam" (test-app)
+#     "ember-template-lint" (lint)
+#     "eslint" (lint)
+#     "npm-run-all" (lint, test-app)
+#   },
+# }
+#
+# For more information, please visit:
+#
+#   - https://crunchingnumbers.live/2020/03/17/ci-with-github-actions-for-ember-apps/
+#   - https://crunchingnumbers.live/2020/08/31/ci-with-github-actions-for-ember-apps-part-2/
+#
+# Author: Isaac J. Lee (GitHub: @ijlee2)
+# Created at: August 31, 2020
+# Updated at: December 27, 2020
+#
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+  schedule:
+    # Run the workflow every Monday at 6 am CST
+    - cron: '0 11 * * MON'
+
+env:
+  NODE_VERSION: 14
+  # PERCY_PARALLEL_NONCE: ${{ github.run_id }}-${{ github.run_number }}
+  # PERCY_PARALLEL_TOTAL: 4
+
+jobs:
+  # build-app:
+  #   name: Build app for testing
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 7
+  #   steps:
+  #     - name: Check out a copy of the repo
+  #       uses: actions/checkout@v2
+
+  #     - name: Use Node.js ${{ env.NODE_VERSION }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+
+  #     - name: Get Yarn cache path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn cache dir)"
+
+  #     - name: Cache Yarn cache and node_modules
+  #       id: cache-dependencies
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           node_modules
+  #         key: ${{ runner.os }}-${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: ${{ runner.os }}-${{ env.NODE_VERSION }}-
+
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+  #       if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+  #     - name: Build app
+  #       run: yarn build
+
+  #     - name: Upload app
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: dist
+  #         path: dist
+
+
+  # lint:
+  #   name: Lint files and dependencies
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 7
+  #   steps:
+  #     - name: Check out a copy of the repo
+  #       uses: actions/checkout@v2
+
+  #     - name: Use Node.js ${{ env.NODE_VERSION }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+
+  #     - name: Get Yarn cache path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn cache dir)"
+
+  #     - name: Cache Yarn cache and node_modules
+  #       id: cache-dependencies
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           node_modules
+  #         key: ${{ runner.os }}-${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: ${{ runner.os }}-${{ env.NODE_VERSION }}-
+
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+  #       if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+  #     - name: Lint
+  #       run: yarn lint
+
+
+  # test-app:
+  #   name: Test app
+  #   needs: [build-app]
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 7
+  #   steps:
+  #     - name: Check out a copy of the repo
+  #       uses: actions/checkout@v2
+
+  #     - name: Use Node.js ${{ env.NODE_VERSION }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+
+  #     - name: Get Yarn cache path
+  #       id: yarn-cache-dir-path
+  #       run: echo "::set-output name=dir::$(yarn cache dir)"
+
+  #     - name: Cache Yarn cache and node_modules
+  #       id: cache-dependencies
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #           node_modules
+  #         key: ${{ runner.os }}-${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: ${{ runner.os }}-${{ env.NODE_VERSION }}-
+
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+  #       if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+  #     - name: Download app
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: dist
+  #         path: dist
+
+  #     - name: Test
+  #       run: yarn test
+  #       env:
+  #         CI: true
+
+
+
+  deploy-app:
+    name: Deploy app
+    # needs: [lint, test-app]
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    # Only run on pushes to develop branch that aren't from the cron workflow
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && contains(github.ref, 'cron') != true
+    steps:
+      - name: Check out a copy of the repo
+        uses: actions/checkout@v2
+
+      # - name: Set up Git user
+      #   run: |
+      #     # Set up a Git user for committing
+      #     git config --global user.name "GitHub Actions"
+      #     git config --global user.email "actions@users.noreply.github.com"
+
+      #     # Copy the Git Auth from the local config
+      #     git config --global "http.https://github.com/.extraheader" \
+      #       "$(git config --local --get http.https://github.com/.extraheader)"
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get Yarn cache path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache Yarn cache and node_modules
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-${{ env.NODE_VERSION }}-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+      - name: Build
+        run: ember b -prod
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+

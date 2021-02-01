@@ -1,0 +1,48 @@
+<h4>
+  Agreed upon payment:
+</h4>
+
+<p>
+  <input
+    value={{this.agreedUponPayment}}
+    {{on 'input' this.updateAgreedUponPayment}}
+  >
+</p>
+
+<h4>
+  Bill:
+</h4>
+
+<p>
+  <textarea
+    {{on 'input' this.updateBill}}
+  >
+    {{this.bill}}
+  </textarea>
+</p>
+
+<h4>
+  Repairs price:
+</h4>
+
+<p>
+  <input
+    value={{this.repairsPrice}}
+    {{on 'input' this.updateRepairsPrice}}
+  >
+</p>
+
+<h4>
+  Remainder:
+</h4>
+
+<p>
+  <input
+    value={{this.remainder}}
+    {{on 'input' this.updateRemainder}}
+  >
+</p>
+
+<p style="white-space: pre-wrap;">
+  {{this.output}}
+</p>
