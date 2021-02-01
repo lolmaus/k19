@@ -6,8 +6,8 @@ module.exports = function (environment) {
 
     modulePrefix: 'k19',
     podModulePrefix: 'k19/pods',
-    rootURL: '/',
-    locationType: 'auto',
+    rootURL: environment === 'production' ? '/k19/' : '/',
+    locationType: environment === 'production' ? 'hash' : 'auto',
     apiNamespace: process.env.EMBER_API_NAMESPACE || '',
     apiHost: process.env.EMBER_API_HOST || '',
 
