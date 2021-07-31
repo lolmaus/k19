@@ -78,7 +78,8 @@ export default class Index extends Controller {
   }
 
   get sumPayments(): number {
-    return this.payments.reduce((result, payment) => result + payment[1], 0) + this.repairsPrice;
+    const resultRaw = this.payments.reduce((result, payment) => result + payment[1], 0) + this.repairsPrice;
+    return Math.round(resultRaw * 100) / 100;
   }
 
   get result(): number {
