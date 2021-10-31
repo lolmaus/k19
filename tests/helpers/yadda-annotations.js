@@ -73,7 +73,9 @@ function setupScenario(featureAnnotations, scenarioAnnotations) {
   const setupFn = setupYaddaTest(scenarioAnnotations);
   if (
     setupFn &&
-    (featureAnnotations.setupapplicationtest || featureAnnotations.setuprenderingtest || featureAnnotations.setuptest)
+    (featureAnnotations.setupapplicationtest ||
+      featureAnnotations.setuprenderingtest ||
+      featureAnnotations.setuptest)
   ) {
     throw new Error(
       'You must not assign any @setupapplicationtest, @setuprenderingtest or @setuptest annotations to a scenario as well as its feature!'

@@ -32,7 +32,11 @@ export type AnyError =
   | NotFoundError
   | OfflineError;
 
-export function errorTranslationKey(intl: Intl, error: AnyError, keyPrefix = 'exceptions'): string | void {
+export function errorTranslationKey(
+  intl: Intl,
+  error: AnyError,
+  keyPrefix = 'exceptions'
+): string | void {
   const rawMessage = 'message' in error ? error.message : String(error);
   let key = `${keyPrefix}.${rawMessage}`;
 
@@ -61,7 +65,11 @@ export function errorTranslationKey(intl: Intl, error: AnyError, keyPrefix = 'ex
   }
 }
 
-export default function translateError(intl: Intl, error: AnyError, keyPrefix = 'exceptions'): string {
+export default function translateError(
+  intl: Intl,
+  error: AnyError,
+  keyPrefix = 'exceptions'
+): string {
   const key = errorTranslationKey(intl, error, keyPrefix);
 
   if (key) {

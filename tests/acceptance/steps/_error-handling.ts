@@ -2,7 +2,10 @@ import Ember from 'ember';
 
 let originalErrorHandler: (error: Error) => void | null | undefined;
 
-function throwUnlessMatches(error: Error & { errors?: { status?: string }[] }, code?: string | number): void {
+function throwUnlessMatches(
+  error: Error & { errors?: { status?: string }[] },
+  code?: string | number
+): void {
   // eslint-disable-next-line eqeqeq
   if (code && error.errors && error.errors[0] && error.errors[0].status != code) {
     throw error;

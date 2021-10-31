@@ -1,5 +1,10 @@
 import * as yadda from 'yadda';
-import { composeSteps, setLabel, opinionatedSteps, setupDictionary } from 'ember-cli-yadda-opinionated/test-support';
+import {
+  composeSteps,
+  setLabel,
+  opinionatedSteps,
+  setupDictionary,
+} from 'ember-cli-yadda-opinionated/test-support';
 import powerSelectSteps from 'ember-cli-yadda-opinionated/test-support/steps/power-select';
 // import powerDatePickerSteps from 'ember-cli-yadda-opinionated/test-support/steps/power-date-picker';
 import errorHandlingSteps from './_error-handling';
@@ -9,7 +14,11 @@ type YaddaEvent = { data: { step: string }; name: string };
 
 setLabel('Bootstrap-Field-Error', '.help-block');
 
-export const dictionary = new yadda.Dictionary().define('number', /(\d+)/, yadda.converters.integer);
+export const dictionary = new yadda.Dictionary().define(
+  'number',
+  /(\d+)/,
+  yadda.converters.integer
+);
 
 setupDictionary(dictionary);
 

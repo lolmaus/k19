@@ -6,8 +6,9 @@ export default class Router extends EmberRouter {
   rootURL = config.rootURL;
 }
 
-Router.map(function() {
+// eslint-disable-next-line array-callback-return
+Router.map(function () {
   this.route('not-found', {
-    path: '/*wildcard'
+    path: '/*wildcard',
   });
 });

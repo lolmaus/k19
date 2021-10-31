@@ -137,8 +137,13 @@ export type NormalizedRequestAttrs<T> = {
 
 export interface HandlerContext {
   request: Request;
-  serialize(modelOrCollection: ModelInstance | ModelInstance[] | ModelClass, serializerName?: string): any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  normalizedRequestAttrs<M extends keyof ModelRegistry>(model: M): NormalizedRequestAttrs<ModelRegistry[M]>;
+  serialize(
+    modelOrCollection: ModelInstance | ModelInstance[] | ModelClass,
+    serializerName?: string
+  ): any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  normalizedRequestAttrs<M extends keyof ModelRegistry>(
+    model: M
+  ): NormalizedRequestAttrs<ModelRegistry[M]>;
 }
 interface HandlerObject {
   [k: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -151,7 +156,11 @@ export type HandlerFunction = (this: HandlerContext, schema: Schema, request: Re
 
 /* tslint:disable unified-signatures */
 function handlerDefinition(path: string, options?: HandlerOptions): void;
-function handlerDefinition(path: string, shorthand: string | string[], options?: HandlerOptions): void;
+function handlerDefinition(
+  path: string,
+  shorthand: string | string[],
+  options?: HandlerOptions
+): void;
 function handlerDefinition(
   path: string,
   shorthand: string | string[],
@@ -159,7 +168,11 @@ function handlerDefinition(
   options?: HandlerOptions
 ): void;
 function handlerDefinition(path: string, responseCode?: number, options?: HandlerOptions): void;
-function handlerDefinition(path: string, handler: HandlerFunction | HandlerObject, options?: HandlerOptions): void;
+function handlerDefinition(
+  path: string,
+  handler: HandlerFunction | HandlerObject,
+  options?: HandlerOptions
+): void;
 function handlerDefinition(
   path: string,
   handler: HandlerFunction | HandlerObject,
@@ -221,7 +234,10 @@ export interface Server {
   // passthrough(...paths: string[], verbs?: Verb[]): void;
   passthrough(...args: any[]): void; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  create<T extends keyof ModelRegistry>(modelName: T, ...traits: string[]): ModelInstance<ModelRegistry[T]>;
+  create<T extends keyof ModelRegistry>(
+    modelName: T,
+    ...traits: string[]
+  ): ModelInstance<ModelRegistry[T]>;
   create<T extends keyof ModelRegistry>(
     modelName: T,
     attrs?: Partial<ModelAttrs<ModelRegistry[T]>>,
@@ -252,9 +268,10 @@ export interface Trait<O extends TraitOptions = unknown> {
   __isTrait__: true;
 }
 
-export function trait<M extends ModelRegistry[keyof ModelRegistry], O extends TraitOptions<M> = TraitOptions<M>>(
-  options: O
-): Trait<O>;
+export function trait<
+  M extends ModelRegistry[keyof ModelRegistry],
+  O extends TraitOptions<M> = TraitOptions<M>
+>(options: O): Trait<O>;
 
 // TODO when https://github.com/Microsoft/TypeScript/issues/1360
 // function association(...traits: string[], overrides?: { [key: string]: any }): any;

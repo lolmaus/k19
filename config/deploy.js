@@ -1,9 +1,9 @@
 /* eslint-env node */
 'use strict';
 
-module.exports = function(deployTarget) {
-  let ENV = {
-    build: {}
+module.exports = function (deployTarget) {
+  const ENV = {
+    build: {},
     // include other plugin configuration that applies to all deploy targets here
   };
 

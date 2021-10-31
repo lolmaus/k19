@@ -6,15 +6,14 @@ type Payment = [string, number];
 
 // prettier-ignore
 const PAYMENT_NAMES = [
-  'Электричество на ОДН Т-1', 'Электрическая энергия (дневной тариф) (ОДН)',
-  'Электричество на ОДН Т-2', 'Электрическая энергия (ночной тариф) (ОДН)',
-  'Подогрев ГВС ОДН', 'Подогрев воды ОДН',
-  'ХВС ОДН',
-  'ХВС для ГВС ОДН', 'ГВС (ХВС для ГВС) ОДН',
-  'Услуги консьержей', 'Услуги консьержки',
-  'Содержание и ремонт жилых помещений', 'Содержание и текущий ремонт',
   'Отопление',
-  'Вывоз и захоронение ТБО',
+  'Услуги консьержки',
+  'ГВС (ХВС для ГВС) ОДН',
+  'Электрическая энергия (дневной тариф) (ОДН)',
+  'Подогрев воды ОДН',
+  'Электрическая энергия (ночной тариф) (ОДН)',
+  'ХВС ОДН',
+  'Содержание и текущий ремонт',
 ];
 
 export default class Index extends Controller {
@@ -22,19 +21,15 @@ export default class Index extends Controller {
   @tracked remainder = 0;
   @tracked repairsPrice = 546.92;
 
-  @tracked bill = `ХВС для ГВС	м3	38.6	5.472	211.22	0.00	0.00	211.22
-  Электричество на ОДН Т-1	кВт.ч	4.61	24.76	114.15	0.00	0.00	114.15
-  Электричество на ОДН Т-2	кВт.ч	1.76	11.33	19.94	0.00	0.00	19.94
-  Отопление	Гкал	2199.94	0.7839	1 724.53	0.00	0.00	1 724.53
-  Обращение с ТКО	м2	949.56	0.5729	544.00	0.00	0.00	544.00
-  Подогрев ХВС для нужд ГВС	Гкал	2199.94	0.327773	721.08	0.00	0.00	721.08
-  Подогрев ГВС ОДН	Гкал	2199.94	0.005421	11.93	0.00	0.00	11.93
-  ХВС ОДН	м3	38.6	0.0905	3.49	0.00	0.00	3.49
-  ХВС для ГВС ОДН	м3	38.6	0.0905	3.49	0.00	0.00	3.49
-  Холодное водоснабжение	м3	38.6	7.524	290.43	0.00	0.00	290.43
-  Услуги консьержей	шт	450	1	450.00	0.00	0.00	450.00
-  Содержание и ремонт жилых помещений	м2	36.45	60.3	2 026.68	0.00	0.00	2 026.68
-  Водоотведение	м3	36.11	12.996	469.28	0.00	0.00	469.28`;
+  @tracked bill = `КОММУНАЛЬНЫЕ УСЛУГИ
+  Отопление Гкал 0,7236 Х 2290,21 1657,2 Х 1657,2 Х Х 1657,2 1657,2 Х
+  Услуги консьержки шт 1 Х 450 450 Х 450 Х Х 450 450 Х
+  ГВС (ХВС для ГВС) ОДН м3 Х 0,0905 38,6 X 3,49 3,49 Х Х 3,49 Х 3,49
+  Электрическая энергия (дневной тариф) (ОДН) кВт Х 1,0409 4,93 X 5,13 5,13 Х Х 5,13 Х 5,13
+  Подогрев воды ОДН Гкал Х 0,0054 2290,21 X 12,43 12,43 Х Х 12,43 Х 12,43
+  Электрическая энергия (ночной тариф) (ОДН) кВт Х 0,4642 1,91 X 0,89 0,89 Х Х 0,89 Х 0,89
+  ХВС ОДН м3 Х 0,0905 38,6 X 3,49 3,49 Х Х 3,49 Х 3,49
+  Содержание и текущий ремонт м2 60,3 Х 33,61 2026,68 Х 2026,68 Х Х 2026,68 2026,68 Х`;
 
   @action
   updateAgreedUponPayment(event: Event): void {
@@ -65,20 +60,26 @@ export default class Index extends Controller {
   }
 
   get payments(): Payment[] {
-    return this.bill
-      .split(/\n+/)
-      .map(
-        (str): Payment => {
-          const [name, ...numbers] = str.trim().split(/\t+/);
-          const price = parseFloat(numbers[numbers.length - 1].replace(/\s+/g, ''));
-          return [name, price];
-        }
-      )
-      .filter((payment: Payment) => PAYMENT_NAMES.includes(payment[0]));
+    const paymentsSplit = this.bill.split(/\s*\n+\s*/);
+
+    return PAYMENT_NAMES.reduce((result, paymentName) => {
+      const line = paymentsSplit.find((payment) => payment.startsWith(paymentName));
+
+      if (line) {
+        const valueStr = line.split(/\s+/).reverse()[2].replace(/,/g, '.');
+        const price = parseFloat(valueStr);
+        result.push([paymentName, price]);
+      } else {
+        result.push([paymentName, 0]);
+      }
+
+      return result;
+    }, [] as Payment[]);
   }
 
   get sumPayments(): number {
-    const resultRaw = this.payments.reduce((result, payment) => result + payment[1], 0) + this.repairsPrice;
+    const resultRaw =
+      this.payments.reduce((result, payment) => result + payment[1], 0) + this.repairsPrice;
     return Math.round(resultRaw * 100) / 100;
   }
 

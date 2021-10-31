@@ -14,9 +14,15 @@ function translateIfAvailable(intl: Intl, key: string): string | false {
   }
 }
 
-export default function flashMessage(messageSuccess: string, messageError?: string): MethodDecorator {
+export default function flashMessage(
+  messageSuccess: string,
+  messageError?: string
+): MethodDecorator {
   return function (_target: unknown, _propertyKey: string, desc: PropertyDescriptor): void {
-    assert('flashMessage decorator can only be applied to methods.', typeof desc.value === 'function');
+    assert(
+      'flashMessage decorator can only be applied to methods.',
+      typeof desc.value === 'function'
+    );
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     const orig = desc.value as Function;
@@ -34,7 +40,8 @@ export default function flashMessage(messageSuccess: string, messageError?: stri
         flashMessages.success(translateIfAvailable(intl, messageSuccess) || messageSuccess);
         return result;
       } catch (e) {
-        const m = (messageError && translateIfAvailable(intl, messageError)) || translateError(intl, e);
+        const m =
+          (messageError && translateIfAvailable(intl, messageError)) || translateError(intl, e);
         if (m) {
           flashMessages.danger(m);
         }
@@ -46,7 +53,10 @@ export default function flashMessage(messageSuccess: string, messageError?: stri
 
 export function errorMessage(messageError?: string): MethodDecorator {
   return function (_target: unknown, _propertyKey: string, desc: PropertyDescriptor): void {
-    assert('flashMessage decorator can only be applied to methods.', typeof desc.value === 'function');
+    assert(
+      'flashMessage decorator can only be applied to methods.',
+      typeof desc.value === 'function'
+    );
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     const orig = desc.value as Function;
