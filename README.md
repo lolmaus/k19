@@ -126,3 +126,4 @@ app/
             styles.module.scss
             template.hbs
 ```
+ 
